@@ -11,11 +11,11 @@ mercadopago.configure({
 const product = {
   id: 1234567890,
   title: "Producto Increíble",
-  unit_price: 100
-}
+  unit_price: 100,
+};
 
 router.get("/", (req, res) => {
-  const userId = "12435diego12343"
+  const userId = "12435diego12343";
 
   let preference = {
     back_urls: {
@@ -90,11 +90,15 @@ router.post("/notification/:userId/:productId", async (req, res) => {
       }
     });
     if (paidAmount >= merchantOrder.body.total_amount) {
-      console.log(`Se completó el pago del usuario ${userId}, del producto ${productId}`);
+      console.log(
+        `Se completó el pago del usuario ${userId}, del producto ${productId}`
+      );
     } else {
-      console.log(`No se completó el pago del usuario ${userId}, del producto ${productId}`);
+      console.log(
+        `No se completó el pago del usuario ${userId}, del producto ${productId}`
+      );
     }
-    
+
     res.sendStatus(200);
   }
 });
