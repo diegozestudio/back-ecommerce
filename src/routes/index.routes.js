@@ -1,12 +1,21 @@
 import { Router } from "express";
 import mercadopago from "mercadopago";
 import config from "../config";
+
 const router = Router();
 
+mercadopago.configure({
+  access_token: config.access_token,
+});
+
+const product = {
+  id: 1234567890,
+  title: "Producto Increíble",
+  unit_price: 100
+}
+
 router.get("/", (req, res) => {
-  mercadopago.configure({
-    access_token: config.access_token,
-  });
+  const userId = "12435diego12343"
 
   let preference = {
     back_urls: {
@@ -16,14 +25,15 @@ router.get("/", (req, res) => {
     },
     items: [
       {
-        title: "Mi producto",
-        unit_price: 100,
+        id: product.id,
+        title: product.title,
+        unit_price: product.unit_price,
         quantity: 1,
         currency_id: "ARS",
       },
     ],
-    auto_return: "approved",
-    notification_url: "https://b3f8-190-151-162-166.sa.ngrok.io/notification_url",
+    // auto_return: "approved",
+    notification_url: `https://65ee-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
   };
 
   mercadopago.preferences
@@ -37,21 +47,56 @@ router.get("/", (req, res) => {
 });
 
 router.get("/success", (req, res) => {
-  res.json({ query: req.query, body: req.body, params: req.params });
+  res.json({ message: "success" });
 });
 
 router.get("/pending", (req, res) => {
-  res.json({ query: req.query, body: req.body, params: req.params });
+  res.json({ message: "pending" });
 });
 
-router.get("/success", (req, res) => {
-  res.json({ query: req.query, body: req.body, params: req.params });
+router.get("/failure", (req, res) => {
+  res.json({ message: "failure" });
 });
 
-router.post("/notification_url", (req, res) => {
-  console.log("entré el post");
-  res.send()
-//   res.json({ query: req.query, body: req.body, params: req.params });
+router.post("/notification/:userId/:productId", async (req, res) => {
+  const { query } = req;
+  const { userId, productId } = req.params;
+  const topic = query.topic;
+  let merchantOrder;
+  if (topic) {
+    if (topic === "payment") {
+      const paymentId = query.id;
+      const payment = await mercadopago.payment.findById(paymentId);
+      merchantOrder = await mercadopago.merchant_orders.findById(
+        payment.body.order.id
+      );
+      console.log("payment", {
+        merchantOrder: merchantOrder.body.payments,
+      });
+    }
+
+    if (topic === "merchant_order") {
+      const orderId = query.id;
+      merchantOrder = await mercadopago.merchant_orders.findById(orderId);
+      console.log("merchant_order", {
+        merchantOrder: merchantOrder.body.payments,
+      });
+    }
+
+    let paidAmount = 0;
+    merchantOrder.body.payments.forEach((payment) => {
+      if (payment.status === "approved") {
+        paidAmount += payment.transaction_amount;
+      }
+    });
+    if (paidAmount >= merchantOrder.body.total_amount) {
+      console.log(`Se completó el pago del usuario ${userId}, del producto ${productId}`);
+    } else {
+      console.log(`No se completó el pago del usuario ${userId}, del producto ${productId}`);
+    }
+    
+    res.sendStatus(200);
+  }
 });
 
 export default router;
