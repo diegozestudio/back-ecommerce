@@ -2,6 +2,9 @@
 GET http://localhost:3000/categories
 
 ###
+GET http://localhost:3000/categories/637d9549e5bc1ac0646ac38a
+
+###
 POST http://localhost:3000/categories
 Content-Type: application/json
 

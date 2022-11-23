@@ -1,0 +1,17 @@
+###
+GET http://localhost:3000/products
+
+###
+GET http://localhost:3000/products/637d9b9b3b5b4830a5d8963a
+
+###
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+    "name": "Iphone 11",
+    "categorieId": "637d9549e5bc1ac0646ac38a",
+    "price": {
+        "usd": 800
+    }
+}

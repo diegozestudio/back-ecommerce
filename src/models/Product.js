@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const productSchema = new Schema(
   {
@@ -7,8 +7,8 @@ const productSchema = new Schema(
       trim: true,
       required: true,
     },
-    categorie: {
-      type: ObjectId,
+    categorieId: {
+      type: Types.ObjectId,
       required: true,
     },
     price: {
