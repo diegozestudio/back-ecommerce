@@ -40,7 +40,7 @@ router.get("/", (req, res) => {
       },
     ],
     // auto_return: "approved",
-    notification_url: `https://e30c-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
+    notification_url: `https://d199-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
   };
 
   mercadopago.preferences

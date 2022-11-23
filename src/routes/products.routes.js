@@ -1,29 +1,26 @@
 import { Router } from "express";
 import Product from "../models/Product";
 import { Types } from "mongoose";
-import { getCategorieById } from "../controllers/categories";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const products = await Product.find();
+  const products = await Product.find().populate("categorie");
   res.json(products);
 });
 
 router.get("/:productId", async (req, res) => {
   const { productId } = req.params;
-  const product = await Product.findById(productId);
-  const categorie = await getCategorieById(product.categorieId);
-  const { ...newProduct } = { ...product._doc, categorie: categorie.name };
-  res.json(newProduct);
+  const product = await Product.findById(productId).populate("categorie");
+  res.json(product);
 });
 
 router.post("/", async (req, res) => {
-  const { name, price, categorieId, details, description, images } = req.body;
+  const { name, price, categorie, details, description, images } = req.body;
   const product = {
     name,
     price,
-    categorieId: Types.ObjectId(categorieId),
+    categorie: Types.ObjectId(categorie),
     details,
     description,
     images,
@@ -31,8 +28,14 @@ router.post("/", async (req, res) => {
   const newProduct = new Product(product);
   const productSaved = await newProduct.save();
   res.json(productSaved);
-  //   ObjectId("637d9549e5bc1ac0646ac38a");
-  //   res.json(ObjectId("637d9549e5bc1ac0646ac38a"));
 });
+
+router.post("/editCategorie", async (req, res) => {
+  const { categorieId, productId } = req.body
+  const product = await Product.findById(productId);
+  product.categorie = Types.ObjectId(categorieId)
+  const productSaved = await product.save();
+  res.json(productSaved);
+})
 
 export default router;

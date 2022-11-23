@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const userSchema = new Schema(
   {
@@ -12,13 +12,15 @@ const userSchema = new Schema(
       required: true,
     },
     phone: {
-      type: Double,
+      type: Number,
     },
     cart: {
-      type: Array,
+      type: [Types.ObjectId],
+      ref: "Product",
     },
     register: {
-      type: Object,
+      type: [Types.ObjectId],
+      ref: "Order",
     },
   },
   {

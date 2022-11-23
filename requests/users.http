@@ -1,0 +1,33 @@
+###
+GET http://localhost:3000/users
+
+###
+GET http://localhost:3000/users/637e30b258972d6937b42ce3
+
+###
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "Diego",
+    "email": "diegozamora09@gmail.com",
+    "phone": 3855306754 
+}
+
+###
+POST http://localhost:3000/users/addProductToCart
+Content-Type: application/json
+
+{
+    "userId": "637e30b258972d6937b42ce3",
+    "productId": "637e25ade9822a2a60c534da"
+}
+
+###
+POST http://localhost:3000/users/deleteProductFromCart
+Content-Type: application/json
+
+{
+    "userId": "637e30b258972d6937b42ce3",
+    "productId": "637e1e9c5bd12817fa2901c7"
+}

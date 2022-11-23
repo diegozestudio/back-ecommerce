@@ -1,15 +1,22 @@
 import { Schema, model } from "mongoose";
+import Product from "./Product";
+import { Types } from "mongoose";
 
 const orderSchema = new Schema(
   {
     userId: {
-      type: Object,
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     status: {
       type: String,
     },
+    total_amount: {
+      type: Number,
+    },
     products: {
-      type: Array,
+      type: [],
     },
   },
   {

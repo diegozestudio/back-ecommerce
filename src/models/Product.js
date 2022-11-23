@@ -7,22 +7,23 @@ const productSchema = new Schema(
       trim: true,
       required: true,
     },
-    categorieId: {
+    categorie: {
       type: Types.ObjectId,
+      ref: "Categorie",
       required: true,
     },
     price: {
-      type: Object,
+      type: {},
       required: true,
     },
     description: {
       type: String,
     },
     details: {
-      type: Array,
+      type: [Object],
     },
     images: {
-      type: Array,
+      type: [String],
     },
   },
   {
