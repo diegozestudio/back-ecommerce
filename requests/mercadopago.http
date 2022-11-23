@@ -1,0 +1,23 @@
+###
+POST http://localhost:3000/mercadopago/getPayment
+Content-Type: application/json
+
+{
+    "userId": "637e7d5109002c068af42920",
+    "cart": [
+    {
+      "_id": "637e7ed6131521fc413edc92",
+      "title": "Iphone 11",
+      "categorie": "637e7e193f06c4ccbc495bd0",
+      "unit_price": {
+        "usd": 800
+      },
+      "details": [],
+      "images": [],
+      "quantity": 1,
+      "createdAt": "2022-11-23T20:13:10.835Z",
+      "updatedAt": "2022-11-23T20:13:10.835Z",
+      "__v": 0
+    }
+  ]
+}

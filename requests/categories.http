@@ -2,12 +2,12 @@
 GET http://localhost:3000/categories
 
 ###
-GET http://localhost:3000/categories/637d9549e5bc1ac0646ac38a
+GET http://localhost:3000/categories/637e7e193f06c4ccbc495bd0
 
 ###
 POST http://localhost:3000/categories
 Content-Type: application/json
 
 {
-    "name": "Accesorios"
+    "title": ""
 }

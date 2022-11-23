@@ -18,7 +18,7 @@ const userSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Product",
     },
-    register: {
+    orderRegister: {
       type: [Types.ObjectId],
       ref: "Order",
     },

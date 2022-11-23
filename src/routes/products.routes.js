@@ -22,10 +22,10 @@ router.get("/byCategorie/:categorieId", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, price, categorie, details, description, images } = req.body;
+  const { title, unit_price, categorie, details, description, images } = req.body;
   const product = {
-    name,
-    price,
+    title,
+    unit_price,
     categorie: Types.ObjectId(categorie),
     details,
     description,

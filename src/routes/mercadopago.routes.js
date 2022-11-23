@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mercadopago from "mercadopago";
 import config from "../config";
+import axios from "axios";
 
 const router = Router();
 
@@ -14,8 +15,38 @@ const product = {
   unit_price: 100,
 };
 
-router.get("/", (req, res) => {
-  const userId = "12435diego12343";
+router.post("/getPayment", async (req, res) => {
+  const { userId, cart } = req.body;
+  const cartFormated = cart.map((product) => {
+    return {
+      id: product._id,
+      title: product.title,
+      unit_price: product.unit_price.usd,
+      quantity: product.quantity,
+      currency_id: "ARS",
+    };
+  });
+  const cartIds = cart.map((product) => product._id);
+  const total_amount = cart.reduce((acc, cur) => {
+    return acc + cur.unit_price.usd * cur.quantity;
+  }, 0);
+
+  const order = await axios.post("http://localhost:3000/orders", {
+    userId,
+    cart: cartIds,
+    total_amount,
+  });
+  console.log({ order });
+
+  // let someDate = new Date();
+  // let numberOfDaysToAdd = 1;
+  // let result = someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+  // let resultFormated = new Date(result).toISOString();
+
+  // let someDate = new Date();
+  // let minutesToAd = 1;
+  // let newDateObj = new Date(someDate.getTime() + minutesToAd * 60000);
+  // let resultFormated = newDateObj.toISOString();
 
   let preference = {
     back_urls: {
@@ -23,30 +54,24 @@ router.get("/", (req, res) => {
       pending: "http://localhost:3000/pending",
       failure: "http://localhost:3000/failure",
     },
-    items: [
-      {
-        id: product.id,
-        title: product.title,
-        unit_price: product.unit_price,
-        quantity: 2,
-        currency_id: "ARS",
-      },
-      {
-        id: 99999999,
-        title: "segundo producto",
-        unit_price: 300,
-        quantity: 1,
-        currency_id: "ARS",
-      },
-    ],
+    items: cartFormated,
     // auto_return: "approved",
-    notification_url: `https://d199-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
+    // date_of_expiration: resultFormated,
+    notification_url: `https://1306-190-151-162-163.sa.ngrok.io/mercadopago/notification/${userId}/${order.data._id}`,
   };
 
   mercadopago.preferences
     .create(preference)
-    .then(function (response) {
-      res.json(response.body.init_point);
+    .then((response) => {
+      // console.log("soy el response.body de getPayment", response.body);
+
+      return axios.post(`http://localhost:3000/orders/editOrder/${order.data._id}`, {
+        paymentLink: response.body.init_point,
+      });
+      // res.json(response.body.init_point);
+    })
+    .then((response) => {
+      res.send(response.data);
     })
     .catch(function (error) {
       console.log(error);
@@ -65,27 +90,27 @@ router.get("/failure", (req, res) => {
   res.json({ message: "failure" });
 });
 
-router.post("/notification/:userId/:productId", async (req, res) => {
+router.post("/notification/:userId/:orderId", async (req, res) => {
   const { query } = req;
-  const { userId, productId } = req.params;
+  const { userId } = req.params;
   const topic = query.topic;
   let merchantOrder = null;
+  let orderId = null;
 
   if (topic) {
     if (topic === "payment") {
       const paymentId = query.id;
       const payment = await mercadopago.payment.findById(paymentId);
-      merchantOrder = await mercadopago.merchant_orders.findById(
-        payment.body.order.id
-      );
-      console.log(topic, merchantOrder.body.payments);
+      orderId = payment.body.order.id;
+      merchantOrder = await mercadopago.merchant_orders.findById(orderId);
     }
 
     if (topic === "merchant_order") {
-      const orderId = query.id;
+      orderId = query.id;
       merchantOrder = await mercadopago.merchant_orders.findById(orderId);
-      console.log(topic, merchantOrder.body.payments);
     }
+
+    console.log(topic, { orderId });
 
     let paidAmount = 0;
     merchantOrder.body.payments.forEach((payment) => {
@@ -93,14 +118,20 @@ router.post("/notification/:userId/:productId", async (req, res) => {
         paidAmount += payment.transaction_amount;
       }
     });
+
     if (paidAmount >= merchantOrder.body.total_amount) {
-      console.log(
-        `Se completó el pago del usuario ${userId}, del producto ${productId}`
+      const orderEdited = await axios.post(
+        "http://localhost:3000/orders/editOrder",
+        {
+          userId,
+        }
       );
+
+      console.log(`Se completó el pago del usuario ${userId}, de la orden X`);
       res.sendStatus(200);
     } else {
       console.log(
-        `No se completó el pago del usuario ${userId}, del producto ${productId}`
+        `No se completó el pago del usuario ${userId}, de la orden X`
       );
     }
   }

@@ -11,12 +11,20 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
+      default: "pending"
     },
     total_amount: {
       type: Number,
     },
-    products: {
-      type: [],
+    cart: {
+      type: [Types.ObjectId],
+      ref: "Product",
+    },
+    paymentId: {
+      type: String,
+    },
+    paymentLink: {
+      type: String,
     },
   },
   {

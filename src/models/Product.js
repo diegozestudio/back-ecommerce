@@ -2,7 +2,7 @@ import { Schema, model, Types } from "mongoose";
 
 const productSchema = new Schema(
   {
-    name: {
+    title: {
       type: String,
       trim: true,
       required: true,
@@ -12,7 +12,7 @@ const productSchema = new Schema(
       ref: "Categorie",
       required: true,
     },
-    price: {
+    unit_price: {
       type: {},
       required: true,
     },
@@ -25,6 +25,10 @@ const productSchema = new Schema(
     images: {
       type: [String],
     },
+    quantity: {
+      type: Number,
+      default: 1
+    }
   },
   {
     timestamps: true,

@@ -2,19 +2,19 @@
 GET http://localhost:3000/products
 
 ###
-GET http://localhost:3000/products/637e3537e4d3f21f325db1c8
+GET http://localhost:3000/products/637e7ed6131521fc413edc92
 
 ###
-GET http://localhost:3000/products/byCategorie/637d957de5bc1ac0646ac38d
+GET http://localhost:3000/products/byCategorie/637e7e213f06c4ccbc495bd2
 
 ###
 POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-    "name": "Macbook Pro",
-    "categorie": "637d957de5bc1ac0646ac38d",
-    "price": {
+    "title": "",
+    "categorie": "",
+    "unit_price": {
         "usd": 2000
     }
 }

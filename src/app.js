@@ -5,6 +5,7 @@ import mercadopagoRoutes from "./routes/mercadopago.routes";
 import categoriesRoutes from "./routes/categories.routes";
 import productsRoutes from "./routes/products.routes";
 import usersRoutes from "./routes/users.routes";
+import ordersRoutes from "./routes/orders.routes";
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use("/mercadopago", mercadopagoRoutes);
 app.use("/categories", categoriesRoutes);
 app.use("/products", productsRoutes);
 app.use("/users", usersRoutes);
+app.use("/orders", ordersRoutes);
 
 export default app;

@@ -16,8 +16,8 @@ router.get("/:categorieId", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name } = req.body;
-  const categorie = { name };
+  const { title } = req.body;
+  const categorie = { title };
   const newCategorie = new Categorie(categorie);
   const categorieSaved = await newCategorie.save();
   res.json(categorieSaved);
