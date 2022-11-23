@@ -28,12 +28,19 @@ router.get("/", (req, res) => {
         id: product.id,
         title: product.title,
         unit_price: product.unit_price,
+        quantity: 2,
+        currency_id: "ARS",
+      },
+      {
+        id: 99999999,
+        title: "segundo producto",
+        unit_price: 300,
         quantity: 1,
         currency_id: "ARS",
       },
     ],
     // auto_return: "approved",
-    notification_url: `https://65ee-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
+    notification_url: `https://e30c-190-151-162-163.sa.ngrok.io/notification/${userId}/${product.id}`,
   };
 
   mercadopago.preferences
@@ -62,7 +69,8 @@ router.post("/notification/:userId/:productId", async (req, res) => {
   const { query } = req;
   const { userId, productId } = req.params;
   const topic = query.topic;
-  let merchantOrder;
+  let merchantOrder = null;
+
   if (topic) {
     if (topic === "payment") {
       const paymentId = query.id;
@@ -70,17 +78,13 @@ router.post("/notification/:userId/:productId", async (req, res) => {
       merchantOrder = await mercadopago.merchant_orders.findById(
         payment.body.order.id
       );
-      console.log("payment", {
-        merchantOrder: merchantOrder.body.payments,
-      });
+      console.log(topic, merchantOrder.body.payments);
     }
 
     if (topic === "merchant_order") {
       const orderId = query.id;
       merchantOrder = await mercadopago.merchant_orders.findById(orderId);
-      console.log("merchant_order", {
-        merchantOrder: merchantOrder.body.payments,
-      });
+      console.log(topic, merchantOrder.body.payments);
     }
 
     let paidAmount = 0;
@@ -93,13 +97,12 @@ router.post("/notification/:userId/:productId", async (req, res) => {
       console.log(
         `Se completó el pago del usuario ${userId}, del producto ${productId}`
       );
+      res.sendStatus(200);
     } else {
       console.log(
         `No se completó el pago del usuario ${userId}, del producto ${productId}`
       );
     }
-
-    res.sendStatus(200);
   }
 });
 
