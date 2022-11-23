@@ -1,6 +1,8 @@
 import { Router } from "express";
 import Order from "../models/Order";
+import User from "../models/User";
 import { Types } from "mongoose";
+import axios from "axios";
 
 const router = Router();
 
@@ -22,22 +24,19 @@ router.get("/", async (req, res) => {
 // });
 
 router.post("/", async (req, res) => {
-  const { userId, total_amount, cart, paymentLink } = req.body;
-  console.log("entré al post de orders", {
-    userId,
-    cart,
-    total_amount,
-    paymentLink,
-  });
+  const { userId, total_amount, cart } = req.body;
   const order = {
     userId: Types.ObjectId(userId),
     total_amount,
     cart: cart.map((product) => Types.ObjectId(product)),
-    paymentLink,
   };
   const newOrder = new Order(order);
   const orderSaved = await newOrder.save();
-  res.json(orderSaved);
+  await axios.post("http://localhost:3000/users/addOrder", {
+    userId,
+    orderId: orderSaved._id.toString(),
+  });
+  res.send(orderSaved);
 });
 
 router.post("/editOrder/:orderId", async (req, res) => {
@@ -45,11 +44,10 @@ router.post("/editOrder/:orderId", async (req, res) => {
   const { orderId } = req.params;
   const order = await Order.findById(orderId);
   if (paymentLink) order.paymentLink = paymentLink;
-  console.log({ paymentId });
-  //   if (paymentId && !order.paymentId) order.paymentId = paymentId;
+  if (paymentId && order) order.paymentId = paymentId;
   if (status) order.status = status;
   const orderSaved = await order.save();
-  res.json(orderSaved);
+  res.send(orderSaved);
 });
 
 export default router;

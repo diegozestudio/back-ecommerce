@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
     "userId": "637e7d5109002c068af42920",
-    "productId": "637e7f1b131521fc413edca1"
+    "productId": "637e7ed6131521fc413edc92"
 }
 
 ###
@@ -30,4 +30,21 @@ Content-Type: application/json
 {
     "userId": "637e30b258972d6937b42ce3",
     "productId": "637e1e9c5bd12817fa2901c7"
+}
+
+###
+POST http://localhost:3000/users/addOrder
+Content-Type: application/json
+
+{
+    "userId": "637e7d5109002c068af42920",
+    "orderId": "637e9e2ab03276151d321ea0"
+}
+
+###
+POST http://localhost:3000/users/emptyCart
+Content-Type: application/json
+
+{
+    "userId": "637e7d5109002c068af42920"
 }

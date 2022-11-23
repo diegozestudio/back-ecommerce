@@ -36,7 +36,6 @@ router.post("/getPayment", async (req, res) => {
     cart: cartIds,
     total_amount,
   });
-  console.log({ order });
 
   // let someDate = new Date();
   // let numberOfDaysToAdd = 1;
@@ -63,18 +62,18 @@ router.post("/getPayment", async (req, res) => {
   mercadopago.preferences
     .create(preference)
     .then((response) => {
-      // console.log("soy el response.body de getPayment", response.body);
-
-      return axios.post(`http://localhost:3000/orders/editOrder/${order.data._id}`, {
-        paymentLink: response.body.init_point,
-      });
-      // res.json(response.body.init_point);
+      return axios.post(
+        `http://localhost:3000/orders/editOrder/${order.data._id}`,
+        {
+          paymentLink: response.body.init_point,
+        }
+      );
     })
     .then((response) => {
       res.send(response.data);
     })
     .catch(function (error) {
-      console.log(error);
+      console.error(error);
     });
 });
 
@@ -90,9 +89,9 @@ router.get("/failure", (req, res) => {
   res.json({ message: "failure" });
 });
 
-router.post("/notification/:userId/:orderId", async (req, res) => {
+router.post("/notification/:userId/:order", async (req, res) => {
   const { query } = req;
-  const { userId } = req.params;
+  const { order } = req.params;
   const topic = query.topic;
   let merchantOrder = null;
   let orderId = null;
@@ -110,8 +109,6 @@ router.post("/notification/:userId/:orderId", async (req, res) => {
       merchantOrder = await mercadopago.merchant_orders.findById(orderId);
     }
 
-    console.log(topic, { orderId });
-
     let paidAmount = 0;
     merchantOrder.body.payments.forEach((payment) => {
       if (payment.status === "approved") {
@@ -121,18 +118,21 @@ router.post("/notification/:userId/:orderId", async (req, res) => {
 
     if (paidAmount >= merchantOrder.body.total_amount) {
       const orderEdited = await axios.post(
-        "http://localhost:3000/orders/editOrder",
+        `http://localhost:3000/orders/editOrder/${order}`,
         {
-          userId,
+          paymentId: orderId,
+          status: "success",
         }
       );
-
-      console.log(`Se completó el pago del usuario ${userId}, de la orden X`);
-      res.sendStatus(200);
+      res.send(orderEdited.data);
     } else {
-      console.log(
-        `No se completó el pago del usuario ${userId}, de la orden X`
+      const orderEdited = await axios.post(
+        `http://localhost:3000/orders/editOrder/${order}`,
+        {
+          paymentId: orderId,
+        }
       );
+      res.send(orderEdited.data);
     }
   }
 });
