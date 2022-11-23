@@ -1,7 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import config from "./config";
-import indexRoutes from "./routes/index.routes";
+import mercadopagoRoutes from "./routes/mercadopago.routes";
+import categoriesRoutes from "./routes/categories.routes";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // routes
-app.use(indexRoutes);
+app.use("/mercadopago", mercadopagoRoutes);
+app.use("/categories", categoriesRoutes);
 
 export default app;
