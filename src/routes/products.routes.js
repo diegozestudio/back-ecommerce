@@ -15,6 +15,12 @@ router.get("/:productId", async (req, res) => {
   res.json(product);
 });
 
+router.get("/byCategorie/:categorieId", async (req, res) => {
+  const { categorieId } = req.params;
+  const products = await Product.find({ categorie: categorieId });
+  res.json(products);
+});
+
 router.post("/", async (req, res) => {
   const { name, price, categorie, details, description, images } = req.body;
   const product = {
@@ -31,11 +37,11 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/editCategorie", async (req, res) => {
-  const { categorieId, productId } = req.body
+  const { categorieId, productId } = req.body;
   const product = await Product.findById(productId);
-  product.categorie = Types.ObjectId(categorieId)
+  product.categorie = Types.ObjectId(categorieId);
   const productSaved = await product.save();
   res.json(productSaved);
-})
+});
 
 export default router;

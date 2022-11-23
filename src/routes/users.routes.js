@@ -1,6 +1,5 @@
 import { Router } from "express";
 import User from "../models/User";
-import { Types } from "mongoose";
 
 const router = Router();
 
@@ -16,13 +15,11 @@ router.get("/:userId", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, email, phone, cart, register } = req.body;
+  const { name, email, phone } = req.body;
   const user = {
     name,
     email,
-    phone, // Types.ObjectId(categorie),
-    cart,
-    register,
+    phone,
   };
   const newUser = new User(user);
   const userSaved = await newUser.save();

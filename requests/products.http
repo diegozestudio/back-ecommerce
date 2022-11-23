@@ -2,17 +2,20 @@
 GET http://localhost:3000/products
 
 ###
-GET http://localhost:3000/products/637e25ade9822a2a60c534da
+GET http://localhost:3000/products/637e3537e4d3f21f325db1c8
+
+###
+GET http://localhost:3000/products/byCategorie/637d957de5bc1ac0646ac38d
 
 ###
 POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-    "name": "Iphone 14",
-    "categorie": "637d9549e5bc1ac0646ac38a",
+    "name": "Macbook Pro",
+    "categorie": "637d957de5bc1ac0646ac38d",
     "price": {
-        "usd": 1100
+        "usd": 2000
     }
 }
 
