@@ -1,0 +1,5 @@
+###
+GET http://localhost:3000/orders
+
+###
+GET http://localhost:3000/orders/637eaf5ca099ffa042572b52

@@ -9,12 +9,6 @@ mercadopago.configure({
   access_token: config.access_token,
 });
 
-const product = {
-  id: 1234567890,
-  title: "Producto Increíble",
-  unit_price: 100,
-};
-
 router.post("/getPayment", async (req, res) => {
   const { userId, cart } = req.body;
   const cartFormated = cart.map((product) => {
@@ -75,6 +69,7 @@ router.post("/getPayment", async (req, res) => {
     .catch(function (error) {
       console.error(error);
     });
+  await axios.post("http://localhost:3000/users/emptyCart", { userId });
 });
 
 router.get("/success", (req, res) => {

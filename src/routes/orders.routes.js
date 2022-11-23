@@ -11,11 +11,11 @@ router.get("/", async (req, res) => {
   res.json(orders);
 });
 
-// router.get("/:productId", async (req, res) => {
-//   const { productId } = req.params;
-//   const product = await Product.findById(productId).populate("categorie");
-//   res.json(product);
-// });
+router.get("/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  const order = await Order.findById(orderId).populate("cart");
+  res.json(order);
+});
 
 // router.get("/byCategorie/:categorieId", async (req, res) => {
 //   const { categorieId } = req.params;
@@ -42,12 +42,16 @@ router.post("/", async (req, res) => {
 router.post("/editOrder/:orderId", async (req, res) => {
   const { paymentId, status, paymentLink } = req.body;
   const { orderId } = req.params;
-  const order = await Order.findById(orderId);
-  if (paymentLink) order.paymentLink = paymentLink;
-  if (paymentId && order) order.paymentId = paymentId;
-  if (status) order.status = status;
-  const orderSaved = await order.save();
-  res.send(orderSaved);
+  try {
+    const order = await Order.findById(orderId);
+    if (paymentLink) order.paymentLink = paymentLink;
+    if (paymentId && order) order.paymentId = paymentId;
+    if (status) order.status = status;
+    const orderSaved = await order.save();
+    res.send(orderSaved);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 export default router;
