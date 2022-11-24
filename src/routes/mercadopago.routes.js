@@ -126,7 +126,7 @@ router.post("/notification/:userId/:order", async (req, res) => {
         `http://localhost:3000/orders/editOrder/${order}`,
         {
           paymentId: orderId,
-          status: merchantOrder.status,
+          status: "success",
         }
       );
       res.send(orderEdited.data);
@@ -135,7 +135,6 @@ router.post("/notification/:userId/:order", async (req, res) => {
         `http://localhost:3000/orders/editOrder/${order}`,
         {
           paymentId: orderId,
-          status: merchantOrder.status,
         }
       );
       res.send(orderEdited.data);
