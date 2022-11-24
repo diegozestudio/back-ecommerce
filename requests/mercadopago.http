@@ -6,21 +6,21 @@ Content-Type: application/json
     "userId": "637e7d5109002c068af42920",
     "cart": [
     {
-      "_id": "637e7f00131521fc413edc9e",
-      "title": "Iphone 14",
+      "_id": "637e7efa131521fc413edc9c",
+      "title": "Iphone 13",
       "categorie": "637e7e193f06c4ccbc495bd0",
       "unit_price": {
-        "usd": 1100
+        "usd": 1000
       },
       "details": [],
       "images": [],
       "quantity": 1,
-      "createdAt": "2022-11-23T20:13:52.768Z",
-      "updatedAt": "2022-11-23T20:13:52.768Z",
+      "createdAt": "2022-11-23T20:13:46.449Z",
+      "updatedAt": "2022-11-23T20:13:46.449Z",
       "__v": 0
     }
   ]
 }
 
 ###
-GET http://localhost:3000/mercadopago/merchantOrder/6599879220
+GET http://localhost:3000/mercadopago/merchantOrder/6601662715
