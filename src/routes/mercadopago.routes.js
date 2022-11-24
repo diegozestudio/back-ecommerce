@@ -50,7 +50,7 @@ router.post("/getPayment", async (req, res) => {
     items: cartFormated,
     // auto_return: "approved",
     // date_of_expiration: resultFormated,
-    notification_url: `https://1306-190-151-162-163.sa.ngrok.io/mercadopago/notification/${userId}/${order.data._id}`,
+    notification_url: `https://13be-190-151-162-163.sa.ngrok.io/mercadopago/notification/${userId}/${order.data._id}`,
   };
 
   mercadopago.preferences
@@ -127,14 +127,6 @@ router.post("/notification/:userId/:order", async (req, res) => {
         {
           paymentId: orderId,
           status: "success",
-        }
-      );
-      res.send(orderEdited.data);
-    } else {
-      const orderEdited = await axios.post(
-        `http://localhost:3000/orders/editOrder/${order}`,
-        {
-          paymentId: orderId,
         }
       );
       res.send(orderEdited.data);
