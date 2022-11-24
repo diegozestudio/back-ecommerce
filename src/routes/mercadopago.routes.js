@@ -43,9 +43,9 @@ router.post("/getPayment", async (req, res) => {
 
   let preference = {
     back_urls: {
-      success: "http://localhost:3000/success",
-      pending: "http://localhost:3000/pending",
-      failure: "http://localhost:3000/failure",
+      success: "http://localhost:3000/mercadopago/success",
+      pending: "http://localhost:3000/mercadopago/pending",
+      failure: "http://localhost:3000/mercadopago/failure",
     },
     items: cartFormated,
     // auto_return: "approved",
@@ -84,6 +84,16 @@ router.get("/failure", (req, res) => {
   res.json({ message: "failure" });
 });
 
+router.get("/merchantOrder/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const merchantOrder = await mercadopago.merchant_orders.findById(orderId);
+    res.send(merchantOrder.body);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 router.post("/notification/:userId/:order", async (req, res) => {
   const { query } = req;
   const { order } = req.params;
@@ -116,7 +126,7 @@ router.post("/notification/:userId/:order", async (req, res) => {
         `http://localhost:3000/orders/editOrder/${order}`,
         {
           paymentId: orderId,
-          status: "success",
+          status: merchantOrder.status,
         }
       );
       res.send(orderEdited.data);
@@ -125,6 +135,7 @@ router.post("/notification/:userId/:order", async (req, res) => {
         `http://localhost:3000/orders/editOrder/${order}`,
         {
           paymentId: orderId,
+          status: merchantOrder.status,
         }
       );
       res.send(orderEdited.data);
